@@ -18,6 +18,11 @@ public class MagiskTask extends DefaultTask {
         MagiskExtension extension = getExtensions().getByType(MagiskExtension.class);
         File outputFile = new File(getProject().file(PathUtils.trim(extension.getOutput())).getAbsolutePath());
 
+        if ( extension.getZip().getZipMap().isEmpty() ) {
+            setDidWork(false);
+            return;
+        }
+
         //noinspection ResultOfMethodCallIgnored
         outputFile.getParentFile().mkdirs();
 
