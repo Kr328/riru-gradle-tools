@@ -63,11 +63,8 @@ public class DexTask extends DefaultTask {
                     .filter(p -> excludePaths.stream().noneMatch(p::startsWith))
                     .map(sourceDirectory::resolve)
                     .map(Path::toString)
-                    .peek(System.out::println)
                     .forEach(command::add);
-
-            System.out.println(command);
-
+            
             builder.command(command.toArray(new String[0]));
 
             Process process = builder.start();
