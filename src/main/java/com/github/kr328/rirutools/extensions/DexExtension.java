@@ -1,10 +1,21 @@
 package com.github.kr328.rirutools.extensions;
 
+import java.util.ArrayList;
+
 public class DexExtension {
     private String buildTools;
     private String platform;
     private String outputDir = "/outputs/dex/";
     private String output = "classes.jar";
+    private ArrayList<String> excludePackages = new ArrayList<>();
+
+    public void exclude(String packageName) {
+        excludePackages.add(packageName);
+    }
+
+    public ArrayList<String> getExcludePackages() {
+        return excludePackages;
+    }
 
     public String getBuildTools() {
         return buildTools;

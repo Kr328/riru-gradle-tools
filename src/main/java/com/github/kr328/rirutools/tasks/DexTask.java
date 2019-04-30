@@ -51,11 +51,22 @@ public class DexTask extends DefaultTask {
             command.add("--lib");
             command.add(libraryPath);
 
-            Files.walk(Paths.get(source.getAbsolutePath()))
-                    .map(Path::toAbsolutePath)
+            Path sourceDirectory = Paths.get(source.getAbsolutePath());
+            List<Path> excludePaths = extension.getExcludePackages().stream()
+                    .map(s -> s.replaceAll("\\.+" ,File.separator))
+                    .map(Paths::get)
+                    .collect(Collectors.toList());
+
+            Files.walk(sourceDirectory)
+                    .map(sourceDirectory::relativize)
+                    .filter(p -> p.toString().endsWith(".class"))
+                    .filter(p -> excludePaths.stream().noneMatch(p::startsWith))
+                    .map(sourceDirectory::resolve)
                     .map(Path::toString)
-                    .filter(s -> s.endsWith(".class"))
+                    .peek(System.out::println)
                     .forEach(command::add);
+
+            System.out.println(command);
 
             builder.command(command.toArray(new String[0]));
 
@@ -86,5 +97,14 @@ public class DexTask extends DefaultTask {
         catch (IOException | InterruptedException e) {
             throw new GradleScriptException("Exec d8: " + e.toString(),e);
         }
+    }
+
+    private static boolean filterExclude(DexExtension extension ,String path) {
+        for ( String excludePackage : extension.getExcludePackages() ) {
+            if ( path.startsWith(excludePackage) )
+                return false;
+        }
+
+        return true;
     }
 }
