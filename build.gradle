@@ -1,0 +1,45 @@
+plugins {
+    id 'idea'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+group 'com.github.kr328'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+gradlePlugin {
+    plugins {
+        ndkPlugin {
+            id = 'rirutools.ndk'
+            implementationClass = 'com.github.kr328.rirutools.NdkPlugin'
+        }
+        dexPlugin {
+            id = "rirutools.dex"
+            implementationClass = 'com.github.kr328.rirutools.DexPlugin'
+        }
+        magiskPlugin {
+            id = "rirutools.magisk"
+            implementationClass = 'com.github.kr328.rirutools.MagiskPlugin'
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("$buildDir/repo")
+        }
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
