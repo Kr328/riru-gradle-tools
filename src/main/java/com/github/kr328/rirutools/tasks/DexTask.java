@@ -35,11 +35,12 @@ public class DexTask extends DefaultTask {
             ProcessBuilder builder = new ProcessBuilder();
             StringBuilder  outputs = new StringBuilder();
 
-            String executable = PathUtils.trim(properties.getAndroidSdkPath() +
-                    "/build-tools/" + extension.getBuildTools() +
-                    "/d8" + PathUtils.executableSuffix(".bat"));
-            String outputPath = PathUtils.trim(getProject().getBuildDir().getAbsolutePath()+ "/" + extension.getOutputDir() + "/" + extension.getOutput());
-            String libraryPath = PathUtils.trim(properties.getAndroidSdkPath() + "/platforms/" + extension.getPlatform() + "/android.jar");
+            String executable = PathUtils.normalize(properties.getAndroidSdkPath() ,
+                    "build-tools" ,extension.getBuildTools() ,"/d8" + PathUtils.executableSuffix(".bat"));
+            String outputPath = PathUtils.normalize(getProject().getBuildDir().getAbsolutePath(),
+                    extension.getOutputDir(),extension.getOutput());
+            String libraryPath = PathUtils.normalize(properties.getAndroidSdkPath() ,
+                    "platforms" ,extension.getPlatform() ,"android.jar");
 
             new File(outputPath).getParentFile().mkdirs();
 
@@ -64,7 +65,7 @@ public class DexTask extends DefaultTask {
                     .map(sourceDirectory::resolve)
                     .map(Path::toString)
                     .forEach(command::add);
-            
+
             builder.command(command.toArray(new String[0]));
 
             Process process = builder.start();
@@ -84,24 +85,15 @@ public class DexTask extends DefaultTask {
             int result = process.waitFor();
 
             if ( result != 0 )
-                throw new IOException("Exec d8: " + command + "\n" + outputs.toString());
+                throw new IOException("d8: " + command + "\n" + outputs.toString());
 
             if ( !new File(outputPath).exists() )
-                throw new IOException("Exec d8: " + command + "\n" + outputs.toString());
+                throw new IOException("d8: " + command + "\n" + outputs.toString());
 
             process.destroy();
         }
         catch (IOException | InterruptedException e) {
-            throw new GradleScriptException("Exec d8: " + e.toString(),e);
+            throw new GradleScriptException("d8: " + e.toString(),e);
         }
-    }
-
-    private static boolean filterExclude(DexExtension extension ,String path) {
-        for ( String excludePackage : extension.getExcludePackages() ) {
-            if ( path.startsWith(excludePackage) )
-                return false;
-        }
-
-        return true;
     }
 }

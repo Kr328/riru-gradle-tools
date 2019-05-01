@@ -38,19 +38,19 @@ public class NdkTask extends DefaultTask {
         ProcessBuilder builder = new ProcessBuilder();
         StringBuilder  outputs = new StringBuilder();
 
-        builder.command(PathUtils.trim(properties.getCmakeDirectory() + "/bin/cmake" + PathUtils.executableSuffix(".exe")) ,
+        builder.command(PathUtils.normalize(properties.getCmakeDirectory(),"/bin/cmake" + PathUtils.executableSuffix(".exe")) ,
                 "-G" ,"Ninja" ,
-                "-DCMAKE_MAKE_PROGRAM=" + PathUtils.trim(properties.getCmakeDirectory() + "/bin/ninja" + PathUtils.executableSuffix(".exe")),
-                "-DCMAKE_TOOLCHAIN_FILE=" + PathUtils.trim(properties.getNdkDirectory() + "/build/cmake/android.toolchain.cmake") ,
+                "-DCMAKE_MAKE_PROGRAM=" + PathUtils.normalize(properties.getCmakeDirectory() ,"/bin/ninja" + PathUtils.executableSuffix(".exe")),
+                "-DCMAKE_TOOLCHAIN_FILE=" + PathUtils.normalize(properties.getNdkDirectory() ,"/build/cmake/android.toolchain.cmake") ,
                 "-DANDROID_PLATFORM=" + extension.getPlatform(),
                 "-DANDROID_STL=" + extension.getStl(),
                 "-DANDROID_ABI=" + abi ,
-                "-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=" + PathUtils.trim(getProject().getBuildDir().getAbsolutePath() + "/" + extension.getOutputDir() + "/" + abi + "/static") ,
-                "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + PathUtils.trim(getProject().getBuildDir().getAbsolutePath() + "/" + extension.getOutputDir() + "/" + abi + "/shared") ,
-                "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=" + PathUtils.trim(getProject().getBuildDir().getAbsolutePath() + "/" + extension.getOutputDir() + "/" + abi + "/executable") ,
-                getProject().file(PathUtils.trim(extension.getSourceDir())).getAbsolutePath());
+                "-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=" + PathUtils.normalize(getProject().getBuildDir().getAbsolutePath() + "/" + extension.getOutputDir() + "/" + abi + "/static") ,
+                "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + PathUtils.normalize(getProject().getBuildDir().getAbsolutePath() + "/" + extension.getOutputDir() + "/" + abi + "/shared") ,
+                "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=" + PathUtils.normalize(getProject().getBuildDir().getAbsolutePath() + "/" + extension.getOutputDir() + "/" + abi + "/executable") ,
+                getProject().file(PathUtils.normalize(extension.getSourceDir())).getAbsolutePath());
 
-        File cmakeConfigDirectory = getProject().file(PathUtils.trim(getProject().getBuildDir().getAbsolutePath() + "/intermediate/cmake/" + abi)).getAbsoluteFile();
+        File cmakeConfigDirectory = getProject().file(PathUtils.normalize(getProject().getBuildDir().getAbsolutePath() , "/intermediate/cmake/" ,abi)).getAbsoluteFile();
         cmakeConfigDirectory.mkdirs();
 
         builder.directory(cmakeConfigDirectory);
@@ -81,9 +81,9 @@ public class NdkTask extends DefaultTask {
         ProcessBuilder builder = new ProcessBuilder();
         StringBuilder  outputs = new StringBuilder();
 
-        builder.command(PathUtils.trim(properties.getCmakeDirectory() + "/bin/cmake" + PathUtils.executableSuffix(".exe")) , "--build" ,".");
+        builder.command(PathUtils.normalize(properties.getCmakeDirectory() ,"/bin/cmake" + PathUtils.executableSuffix(".exe")) , "--build" ,".");
 
-        File cmakeConfigDirectory = getProject().file(PathUtils.trim(getProject().getBuildDir().getAbsolutePath() + "/intermediate/cmake/" + abi)).getAbsoluteFile();
+        File cmakeConfigDirectory = getProject().file(PathUtils.normalize(getProject().getBuildDir().getAbsolutePath() + "/intermediate/cmake/" + abi)).getAbsoluteFile();
 
         builder.directory(cmakeConfigDirectory);
 

@@ -16,7 +16,7 @@ public class MagiskTask extends DefaultTask {
     @TaskAction
     void onAction() throws IOException {
         MagiskExtension extension = getExtensions().getByType(MagiskExtension.class);
-        File outputFile = new File(getProject().file(PathUtils.trim(extension.getOutput())).getAbsolutePath());
+        File outputFile = new File(getProject().file(PathUtils.normalize(extension.getOutput())).getAbsolutePath());
 
         if ( extension.getZip().getZipMap().isEmpty() ) {
             setDidWork(false);
