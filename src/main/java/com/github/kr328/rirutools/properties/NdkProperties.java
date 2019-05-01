@@ -11,7 +11,8 @@ public class NdkProperties {
     private String ndkDirectory;
     private String cmakeDirectory;
 
-    private NdkProperties() {}
+    private NdkProperties() {
+    }
 
     public static NdkProperties readFromProject(Project project) {
         Properties properties = PropertiesUtils.readFromFiles(project.getRootProject().file("local.properties"),
@@ -21,9 +22,9 @@ public class NdkProperties {
         result.ndkDirectory = properties.getProperty("ndk.dir");
         result.cmakeDirectory = properties.getProperty("cmake.dir");
 
-        if ( result.getNdkDirectory() == null || result.getCmakeDirectory() == null )
+        if (result.getNdkDirectory() == null || result.getCmakeDirectory() == null)
             throw new GradleScriptException("ndk.dir and cmake.dir must be set in local.properties"
-                    ,new FileNotFoundException());
+                    , new FileNotFoundException());
 
         return result;
     }

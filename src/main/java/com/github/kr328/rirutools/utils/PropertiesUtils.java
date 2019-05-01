@@ -6,13 +6,13 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 public class PropertiesUtils {
-    public static Properties readFromFiles(File ...files) {
+    public static Properties readFromFiles(File... files) {
         Properties result = new Properties();
 
         Stream.of(files)
                 .filter(File::exists)
                 .map(PropertiesUtils::openFileOrNull)
-                .peek(fileInputStream -> propertiesLoadOrNot(result ,fileInputStream))
+                .peek(fileInputStream -> propertiesLoadOrNot(result, fileInputStream))
                 .forEach(PropertiesUtils::closeClient);
 
         return result;
@@ -26,14 +26,18 @@ public class PropertiesUtils {
         }
     }
 
-    private static void propertiesLoadOrNot(Properties properties ,InputStream inputStream) {
+    private static void propertiesLoadOrNot(Properties properties, InputStream inputStream) {
         try {
             properties.load(inputStream);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     private static void closeClient(@Nullable InputStream inputStream) {
-        if ( inputStream != null )
-            try {inputStream.close();} catch (IOException ignored) {}
+        if (inputStream != null)
+            try {
+                inputStream.close();
+            } catch (IOException ignored) {
+            }
     }
 }

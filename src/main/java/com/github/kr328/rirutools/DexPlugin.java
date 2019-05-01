@@ -13,15 +13,15 @@ import java.util.Optional;
 public class DexPlugin implements Plugin<Project> {
     @Override
     public void apply(Project target) {
-        if ( !target.getPlugins().hasPlugin(JavaPlugin.class) )
+        if (!target.getPlugins().hasPlugin(JavaPlugin.class))
             target.getPlugins().apply(JavaPlugin.class);
 
         JavaCompile compile = (JavaCompile) target.getTasks().findByName("compileJava");
-        if ( compile == null )
+        if (compile == null)
             throw new GradleException("Failure to apply java plugin");
 
-        target.getExtensions().create("dex" , DexExtension.class);
-        DexTask dexTask = target.getTasks().create("transformDex" , DexTask.class);
+        target.getExtensions().create("dex", DexExtension.class);
+        DexTask dexTask = target.getTasks().create("transformDex", DexTask.class);
 
         dexTask.dependsOn(compile);
         Optional.ofNullable(target.getTasks().findByName("assemble")).ifPresent(t -> t.dependsOn(dexTask));
@@ -31,8 +31,8 @@ public class DexPlugin implements Plugin<Project> {
             JavaCompile compiler = (JavaCompile) task;
             DexExtension extension = task.getProject().getExtensions().findByType(DexExtension.class);
 
-            if ( extension == null || extension.getPlatform() == null )
-                throw new GradleScriptException("platform is null" ,new NullPointerException());
+            if (extension == null || extension.getPlatform() == null)
+                throw new GradleScriptException("platform is null", new NullPointerException());
 
             compiler.getOptions().setBootstrapClasspath
                     (target.files(properties.getAndroidSdkPath() + "/platforms/" + extension.getPlatform() + "/android.jar"));

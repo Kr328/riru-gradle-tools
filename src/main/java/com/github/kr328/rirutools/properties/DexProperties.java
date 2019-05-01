@@ -17,9 +17,9 @@ public class DexProperties {
 
         result.androidSdkPath = properties.getProperty("sdk.dir");
 
-        if ( result.androidSdkPath == null )
+        if (result.androidSdkPath == null)
             throw new GradleScriptException("sdk.dir must be set in local.properties"
-                    ,new FileNotFoundException());
+                    , new FileNotFoundException());
 
         return result;
     }

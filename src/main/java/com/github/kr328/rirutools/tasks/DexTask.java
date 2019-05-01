@@ -8,7 +8,10 @@ import org.gradle.api.GradleScriptException;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.compile.JavaCompile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,14 +36,14 @@ public class DexTask extends DefaultTask {
 
         try {
             ProcessBuilder builder = new ProcessBuilder();
-            StringBuilder  outputs = new StringBuilder();
+            StringBuilder outputs = new StringBuilder();
 
-            String executable = PathUtils.normalize(properties.getAndroidSdkPath() ,
-                    "build-tools" ,extension.getBuildTools() ,"/d8" + PathUtils.executableSuffix(".bat"));
+            String executable = PathUtils.normalize(properties.getAndroidSdkPath(),
+                    "build-tools", extension.getBuildTools(), "/d8" + PathUtils.executableSuffix(".bat"));
             String outputPath = PathUtils.normalize(getProject().getBuildDir().getAbsolutePath(),
-                    extension.getOutputDir(),extension.getOutput());
-            String libraryPath = PathUtils.normalize(properties.getAndroidSdkPath() ,
-                    "platforms" ,extension.getPlatform() ,"android.jar");
+                    extension.getOutputDir(), extension.getOutput());
+            String libraryPath = PathUtils.normalize(properties.getAndroidSdkPath(),
+                    "platforms", extension.getPlatform(), "android.jar");
 
             new File(outputPath).getParentFile().mkdirs();
 
@@ -54,7 +57,7 @@ public class DexTask extends DefaultTask {
 
             Path sourceDirectory = Paths.get(source.getAbsolutePath());
             List<Path> excludePaths = extension.getExcludePackages().stream()
-                    .map(s -> s.replaceAll("\\.+" ,File.separator))
+                    .map(s -> s.replaceAll("\\.+", File.separator))
                     .map(Paths::get)
                     .collect(Collectors.toList());
 
@@ -73,27 +76,26 @@ public class DexTask extends DefaultTask {
             String line;
 
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            while (( line = reader.readLine()) != null )
+            while ((line = reader.readLine()) != null)
                 outputs.append(line).append('\n');
             reader.close();
 
             reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while (( line = reader.readLine()) != null )
+            while ((line = reader.readLine()) != null)
                 outputs.append(line).append('\n');
             reader.close();
 
             int result = process.waitFor();
 
-            if ( result != 0 )
+            if (result != 0)
                 throw new IOException("d8: " + command + "\n" + outputs.toString());
 
-            if ( !new File(outputPath).exists() )
+            if (!new File(outputPath).exists())
                 throw new IOException("d8: " + command + "\n" + outputs.toString());
 
             process.destroy();
-        }
-        catch (IOException | InterruptedException e) {
-            throw new GradleScriptException("d8: " + e.toString(),e);
+        } catch (IOException | InterruptedException e) {
+            throw new GradleScriptException("d8: " + e.toString(), e);
         }
     }
 }

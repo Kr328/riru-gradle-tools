@@ -1,11 +1,11 @@
 package com.github.kr328.rirutools.extensions;
 
 public class NdkExtension {
-    private String   sourceDir;
-    private String   outputDir = "/outputs/ndk";
-    private String[] abiFilters = new String[]{"armeabi-v7a" ,"arm64-v8a"};
-    private String   platform = "android-21";
-    private String   stl = "c++_static";
+    private String sourceDir;
+    private String outputDir = "/outputs/ndk";
+    private String[] abiFilters = new String[]{"armeabi-v7a", "arm64-v8a"};
+    private String platform = "android-21";
+    private String stl = "c++_static";
 
     public String getSourceDir() {
         return sourceDir;

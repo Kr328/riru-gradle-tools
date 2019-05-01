@@ -12,8 +12,8 @@ import java.util.Optional;
 public class NdkPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        NdkTask task = project.getTasks().create("ndk" , NdkTask.class);
-        NdkExtension ndkExtension = project.getExtensions().create("ndk" , NdkExtension.class);
+        NdkTask task = project.getTasks().create("ndk", NdkTask.class);
+        NdkExtension ndkExtension = project.getExtensions().create("ndk", NdkExtension.class);
 
         Optional.ofNullable(project.getTasks().findByName("classes")).ifPresent(t -> t.dependsOn(task));
     }

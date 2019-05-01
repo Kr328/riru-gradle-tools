@@ -18,7 +18,7 @@ public class MagiskTask extends DefaultTask {
         MagiskExtension extension = getExtensions().getByType(MagiskExtension.class);
         File outputFile = new File(getProject().file(PathUtils.normalize(extension.getOutput())).getAbsolutePath());
 
-        if ( extension.getZip().getZipMap().isEmpty() ) {
+        if (extension.getZip().getZipMap().isEmpty()) {
             setDidWork(false);
             return;
         }
@@ -28,34 +28,32 @@ public class MagiskTask extends DefaultTask {
 
         ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(outputFile));
 
-        for ( Map.Entry<File ,String> entry : extension.getZip().getZipMap().entrySet() ) {
-            archiveEntry(entry.getKey() ,entry.getValue() ,outputStream);
+        for (Map.Entry<File, String> entry : extension.getZip().getZipMap().entrySet()) {
+            archiveEntry(entry.getKey(), entry.getValue(), outputStream);
         }
 
         outputStream.close();
     }
 
-    private void archiveEntry(File source , String target , ZipOutputStream stream) throws IOException {
-        if ( source.isDirectory() ) {
-            for ( File f : Objects.requireNonNull(source.listFiles()))
-                archiveEntry(f ,target + "/" + f.getName() ,stream);
-        }
-        else if ( source.isFile() ) {
+    private void archiveEntry(File source, String target, ZipOutputStream stream) throws IOException {
+        if (source.isDirectory()) {
+            for (File f : Objects.requireNonNull(source.listFiles()))
+                archiveEntry(f, target + "/" + f.getName(), stream);
+        } else if (source.isFile()) {
             ZipEntry entry = new ZipEntry(PathUtils.zipEntry(target));
             stream.putNextEntry(entry);
-            readFileToStream(source ,stream);
-        }
-        else
-            throw new GradleScriptException("Magisk file not found." ,new FileNotFoundException(source.getAbsolutePath()));
+            readFileToStream(source, stream);
+        } else
+            throw new GradleScriptException("Magisk file not found.", new FileNotFoundException(source.getAbsolutePath()));
     }
 
-    private void readFileToStream(File file , OutputStream stream) throws IOException {
+    private void readFileToStream(File file, OutputStream stream) throws IOException {
         byte[] buffer = new byte[4096];
         FileInputStream inputStream = new FileInputStream(file);
         int read_length;
 
-        while (( read_length = inputStream.read(buffer)) > 0 )
-            stream.write(buffer ,0 ,read_length);
+        while ((read_length = inputStream.read(buffer)) > 0)
+            stream.write(buffer, 0, read_length);
 
         inputStream.close();
     }

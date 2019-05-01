@@ -24,10 +24,10 @@ public class MagiskExtension {
     }
 
     public static class ZipRecord {
-        private HashMap<File ,String> zipMap = new HashMap<>();
+        private HashMap<File, String> zipMap = new HashMap<>();
 
-        public void map(File source ,String target) {
-            zipMap.put(source ,target);
+        public void map(File source, String target) {
+            zipMap.put(source, target);
         }
 
         public HashMap<File, String> getZipMap() {
