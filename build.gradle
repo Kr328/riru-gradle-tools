@@ -1,11 +1,19 @@
-plugins {
-    id 'idea'
-    id 'java-gradle-plugin'
-    id 'maven-publish'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+    }
 }
 
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
 group 'com.github.kr328'
-version '1.0-alpha01'
+version '1.0-alpha02'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -32,10 +40,83 @@ gradlePlugin {
     }
 }
 
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    
+    pkg {
+        repo = project.name
+        name = project.name
+        desc = 'Gradle plugin for riru modules build'
+        websiteUrl = 'https://github.com/Kr328/riru-gradle-tools'
+        issueTrackerUrl = 'https://github.com/Kr328/riru-gradle-tools/issues'
+        vcsUrl = 'https://github.com/Kr328/riru-gradle-tools.git'
+        licenses = ['MIT']
+        labels = ['riru']
+        publicDownloadNumbers = true
+        
+        githubRepo = 'Kr328/riru-gradle-tools'
+        githubReleaseNotesFile = 'README.md'
+        
+        version {
+            name = project.version
+            desc = project.version
+            released = new Date()
+        }
+    }
+    
+    publications = ['rirutools']
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "The MIT License"
+            url "https://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "kr328"
+            name "Kr328"
+            email "kr328@yahoo.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/Kr328/riru-gradle-tools"
+    }
+}
+
+// Create the publication with the pom configuration:
 publishing {
+    publications {
+        rirutools(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Gradle plugins for riru module build')
+                root.appendNode('name', 'Riru Gradle Plugins')
+                root.appendNode('url', 'https://github.com/Kr328/riru-gradle-tools')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+    // For local test
     repositories {
         maven {
-            url = uri("$buildDir/repo")
+            url = "$buildDir/repo"
         }
     }
 }
