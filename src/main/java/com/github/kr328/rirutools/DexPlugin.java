@@ -35,10 +35,8 @@ public class DexPlugin implements Plugin<Project> {
                 throw new GradleScriptException("platform is null", new NullPointerException());
 
             compiler.setClasspath(
-                    compiler.getClasspath().plus(
-                            target.files(properties.getAndroidSdkPath() + "/platforms/" + extension.getPlatform() + "/android.jar")));
-
-            System.out.println(compiler.getClasspath().toString());
+                    target.files(properties.getAndroidSdkPath() + "/platforms/" + extension.getPlatform() + "/android.jar")
+                            .plus(compiler.getClasspath()));
         });
     }
 }

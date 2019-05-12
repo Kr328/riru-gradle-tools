@@ -15,8 +15,10 @@ import java.util.zip.ZipOutputStream;
 public class MagiskTask extends DefaultTask {
     @TaskAction
     void onAction() throws IOException {
-        MagiskExtension extension = getExtensions().getByType(MagiskExtension.class);
-        File outputFile = new File(getProject().file(PathUtils.normalize(extension.getOutput())).getAbsolutePath());
+        MagiskExtension extension = getProject().getExtensions().getByType(MagiskExtension.class);
+        File outputFile = new File(getProject().file(
+                PathUtils.normalize(extension.getOutput()
+                        .replace("$buildDir", getProject().getBuildDir().getAbsolutePath()))).getAbsolutePath());
 
         if (extension.getZip().getZipMap().isEmpty()) {
             setDidWork(false);

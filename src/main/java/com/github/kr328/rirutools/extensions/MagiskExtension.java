@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class MagiskExtension {
     private ZipRecord zip = new ZipRecord();
-    private String output = "/outputs/magisk/magisk-module.zip";
+    private String output = "$buildDir/outputs/magisk/magisk-module.zip";
 
     public ZipRecord getZip() {
         return zip;
