@@ -1,8 +1,12 @@
 package com.github.kr328.rirutools.utils;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 public class PathUtils {
+    private static final Pattern SEPARATOR_ALL = Pattern.compile("[/\\\\]+");
+    private static final String SEPARATOR = File.separator.replace("\\", "\\\\");
+
     public static String normalize(String base, String... tree) {
         StringBuilder sb = new StringBuilder();
         sb.append(base);
@@ -10,7 +14,7 @@ public class PathUtils {
         for (String s : tree)
             sb.append('/').append(s);
 
-        return sb.toString().replaceAll("/+", File.separator).replaceAll("\\+", File.separator);
+        return SEPARATOR_ALL.matcher(sb.toString()).replaceAll(SEPARATOR);
     }
 
     public static String zipEntry(String p) {
@@ -26,3 +30,4 @@ public class PathUtils {
         return "";
     }
 }
+

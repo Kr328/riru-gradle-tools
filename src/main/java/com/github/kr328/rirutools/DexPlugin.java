@@ -7,6 +7,8 @@ import org.gradle.api.*;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.compile.JavaCompile;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @NonNullApi
@@ -34,9 +36,13 @@ public class DexPlugin implements Plugin<Project> {
             if (extension == null || extension.getPlatform() == null)
                 throw new GradleScriptException("platform is null", new NullPointerException());
 
-            compiler.setClasspath(
-                    target.files(properties.getAndroidSdkPath() + "/platforms/" + extension.getPlatform() + "/android.jar")
-                            .plus(compiler.getClasspath()));
+
+            File androidJar = Paths.get(properties.getAndroidSdkPath(), "platforms", extension.getPlatform(), "android.jar").toFile();
+
+            if ( !androidJar.exists() )
+                throw new GradleException("android.jar not found. " + androidJar.getAbsolutePath());
+
+            compiler.setClasspath(target.files(androidJar.getAbsolutePath()).plus(compiler.getClasspath()));
         });
     }
 }
