@@ -4,9 +4,11 @@ import com.github.kr328.rirutools.extensions.DexExtension;
 import com.github.kr328.rirutools.properties.DexProperties;
 import com.github.kr328.rirutools.utils.PathUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.GradleScriptException;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.jvm.tasks.Jar;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +25,7 @@ public class DexTask extends DefaultTask {
     @TaskAction
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void onAction() {
-        JavaCompile task = (JavaCompile) getProject().getTasks().getByName("compileJava");
+        Jar task = (Jar) getProject().getTasks().getByName("jar");
         File source = task.getDestinationDir();
 
         DexProperties properties = DexProperties.readFromProject(getProject());
@@ -63,7 +65,7 @@ public class DexTask extends DefaultTask {
 
             Files.walk(sourceDirectory)
                     .map(sourceDirectory::relativize)
-                    .filter(p -> p.toString().endsWith(".class"))
+                    .filter(p -> p.toString().endsWith(".jar"))
                     .filter(p -> excludePaths.stream().noneMatch(p::startsWith))
                     .map(sourceDirectory::resolve)
                     .map(Path::toString)

@@ -25,7 +25,7 @@ public class DexPlugin implements Plugin<Project> {
         target.getExtensions().create("dex", DexExtension.class);
         DexTask dexTask = target.getTasks().create("transformDex", DexTask.class);
 
-        dexTask.dependsOn(compile);
+        dexTask.dependsOn(target.getTasks().getByName("jar"));
         Optional.ofNullable(target.getTasks().findByName("assemble")).ifPresent(t -> t.dependsOn(dexTask));
 
         compile.doFirst(task -> {
@@ -35,7 +35,6 @@ public class DexPlugin implements Plugin<Project> {
 
             if (extension == null || extension.getPlatform() == null)
                 throw new GradleScriptException("platform is null", new NullPointerException());
-
 
             File androidJar = Paths.get(properties.getAndroidSdkPath(), "platforms", extension.getPlatform(), "android.jar").toFile();
 
