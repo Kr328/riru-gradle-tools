@@ -31,7 +31,11 @@ public class DexTask extends DefaultTask {
         DexProperties properties = DexProperties.readFromProject(getProject());
         DexExtension extension = getProject().getExtensions().getByType(DexExtension.class);
 
-        if (task.getState().getNoSource() || task.getState().getUpToDate()) {
+        String outputPath = PathUtils.normalize(getProject().getBuildDir().getAbsolutePath(),
+                extension.getOutputDir(), extension.getOutput());
+        File output = new File(outputPath);
+
+        if ( source.lastModified() < output.lastModified() ) {
             setDidWork(false);
             return;
         }
@@ -42,8 +46,6 @@ public class DexTask extends DefaultTask {
 
             String executable = PathUtils.normalize(properties.getAndroidSdkPath(),
                     "build-tools", extension.getBuildTools(), "/d8" + PathUtils.executableSuffix(".bat"));
-            String outputPath = PathUtils.normalize(getProject().getBuildDir().getAbsolutePath(),
-                    extension.getOutputDir(), extension.getOutput());
             String libraryPath = PathUtils.normalize(properties.getAndroidSdkPath(),
                     "platforms", extension.getPlatform(), "android.jar");
 

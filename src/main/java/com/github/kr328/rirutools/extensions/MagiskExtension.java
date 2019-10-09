@@ -1,7 +1,7 @@
 package com.github.kr328.rirutools.extensions;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class MagiskExtension {
     private ZipRecord zip = new ZipRecord();
@@ -24,17 +24,17 @@ public class MagiskExtension {
     }
 
     public static class ZipRecord {
-        private HashMap<File, String> zipMap = new HashMap<>();
+        private LinkedHashMap<File, String> zipMap = new LinkedHashMap<>();
 
         public void map(File source, String target) {
             zipMap.put(source, target);
         }
 
-        public HashMap<File, String> getZipMap() {
+        public LinkedHashMap<File, String> getZipMap() {
             return zipMap;
         }
 
-        public void setZipMap(HashMap<File, String> zipMap) {
+        public void setZipMap(LinkedHashMap<File, String> zipMap) {
             this.zipMap = zipMap;
         }
     }
