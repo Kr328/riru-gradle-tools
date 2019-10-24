@@ -26,7 +26,7 @@ public class DexTask extends DefaultTask {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void onAction() {
         Jar task = (Jar) getProject().getTasks().getByName("jar");
-        File source = task.getDestinationDir();
+        File source = task.getArchivePath();
 
         DexProperties properties = DexProperties.readFromProject(getProject());
         DexExtension extension = getProject().getExtensions().getByType(DexExtension.class);
@@ -58,20 +58,7 @@ public class DexTask extends DefaultTask {
             command.add(outputPath);
             command.add("--lib");
             command.add(libraryPath);
-
-            Path sourceDirectory = Paths.get(source.getAbsolutePath());
-            List<Path> excludePaths = extension.getExcludePackages().stream()
-                    .map(s -> s.replaceAll("\\.+", File.separator))
-                    .map(Paths::get)
-                    .collect(Collectors.toList());
-
-            Files.walk(sourceDirectory)
-                    .map(sourceDirectory::relativize)
-                    .filter(p -> p.toString().endsWith(".jar"))
-                    .filter(p -> excludePaths.stream().noneMatch(p::startsWith))
-                    .map(sourceDirectory::resolve)
-                    .map(Path::toString)
-                    .forEach(command::add);
+            command.add(source.getAbsolutePath());
 
             builder.command(command.toArray(new String[0]));
 

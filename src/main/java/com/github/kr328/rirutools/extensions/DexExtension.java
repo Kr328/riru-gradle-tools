@@ -7,15 +7,6 @@ public class DexExtension {
     private String platform;
     private String outputDir = "/outputs/dex/";
     private String output = "classes.jar";
-    private ArrayList<String> excludePackages = new ArrayList<>();
-
-    public void exclude(String packageName) {
-        excludePackages.add(packageName);
-    }
-
-    public ArrayList<String> getExcludePackages() {
-        return excludePackages;
-    }
 
     public String getBuildTools() {
         return buildTools;
